@@ -459,7 +459,7 @@ set$(get$(Em, 'Auth'), 'Session', Ember.Object.extend({
   },
   findUser: function () {
     var cache$, model, modelKey, this$;
-    if (get$(this, 'userId') && (modelKey = get$(get$(this, 'auth'), 'userModel')) && (model = Ember.get(modelKey)))
+    if (get$(this, 'userId') && (modelKey = get$(get$(this, 'auth'), 'userModel')) && (model = get$(App, '__container__').lookup(modelKey)))
       if (null != (null != (cache$ = set$(this, 'user', model.find(get$(this, 'userId')))) ? get$(cache$, 'then') : void 0)) {
         return model.find(get$(this, 'userId')).then((this$ = this, function (m) {
           return set$(this$, 'user', m);

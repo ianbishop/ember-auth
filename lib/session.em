@@ -20,7 +20,7 @@ class Em.Auth.Session
     @adapter.syncEvent.apply @adapter, arguments if @adapter.syncEvent?
 
   findUser: ->
-    if @userId && (modelKey = @auth.userModel) && (model = Ember.get modelKey)
+    if @userId && (modelKey = @auth.userModel) && (model = App.__container__.lookup modelKey)
       if (@user = model.find @userId)?.then?
         model.find(@userId).then (m) => @user = m
 
