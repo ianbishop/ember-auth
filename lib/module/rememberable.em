@@ -28,15 +28,24 @@ class Em.Auth.Module.Rememberable
   remember: ->
     if token = @auth.response?[@config.tokenKey]
       @storeToken(token) unless token == @retrieveToken()
+      @storeUserId(@auth.userId) if @auth.userId
     else
       @forget() unless @fromRecall
     @fromRecall = false
 
   forget: ->
     @removeToken()
+    @removeUserId()
+
+  retrieveUserId: ->
+    @auth._session.retrieve 'userId'
 
   retrieveToken: ->
     @auth._session.retrieve 'ember-auth-rememberable'
+
+  storeUserId: (userId) ->
+    @auth._session.store 'userId', userId,
+      expires: @config.period
 
   storeToken: (token) ->
     @auth._session.store 'ember-auth-rememberable', token,
@@ -44,6 +53,9 @@ class Em.Auth.Module.Rememberable
 
   removeToken: ->
     @auth._session.remove 'ember-auth-rememberable'
+
+  removeUserId: ->
+    @auth._session.remove 'userId'
 
   patch: ->
     self = this

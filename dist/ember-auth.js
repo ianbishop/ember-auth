@@ -459,6 +459,8 @@ set$(get$(Em, 'Auth'), 'Session', Ember.Object.extend({
   },
   findUser: function () {
     var cache$, model, modelKey, this$;
+    if (!get$(this, 'userId'))
+      set$(this, 'userId', get$(get$(this, 'auth'), '_session').retrieve('userId'));
     if (get$(this, 'userId') && (modelKey = get$(get$(this, 'auth'), 'userModel')) && (model = get$(App, '__container__').lookup(modelKey)))
       if (null != (null != (cache$ = set$(this, 'user', model.find(get$(this, 'userId')))) ? get$(cache$, 'then') : void 0)) {
         return model.find(get$(this, 'userId')).then((this$ = this, function (m) {
@@ -928,25 +930,36 @@ set$(get$(get$(Em, 'Auth'), 'Module'), 'Rememberable', Ember.Object.extend({
   remember: function () {
     var token;
     if (token = null != get$(get$(this, 'auth'), 'response') ? get$(get$(this, 'auth'), 'response')[get$(get$(this, 'config'), 'tokenKey')] : void 0) {
-      if (!(token === this.retrieveToken())) {
+      if (!(token === this.retrieveToken()))
         this.storeToken(token);
-      }
+      if (get$(get$(this, 'auth'), 'userId'))
+        this.storeUserId(get$(get$(this, 'auth'), 'userId'));
     } else if (!get$(this, 'fromRecall')) {
       this.forget();
     }
     return set$(this, 'fromRecall', false);
   },
   forget: function () {
-    return this.removeToken();
+    this.removeToken();
+    return this.removeUserId();
+  },
+  retrieveUserId: function () {
+    return get$(get$(this, 'auth'), '_session').retrieve('userId');
   },
   retrieveToken: function () {
     return get$(get$(this, 'auth'), '_session').retrieve('ember-auth-rememberable');
+  },
+  storeUserId: function (userId) {
+    return get$(get$(this, 'auth'), '_session').store('userId', userId, { expires: get$(get$(this, 'config'), 'period') });
   },
   storeToken: function (token) {
     return get$(get$(this, 'auth'), '_session').store('ember-auth-rememberable', token, { expires: get$(get$(this, 'config'), 'period') });
   },
   removeToken: function () {
     return get$(get$(this, 'auth'), '_session').remove('ember-auth-rememberable');
+  },
+  removeUserId: function () {
+    return get$(get$(this, 'auth'), '_session').remove('userId');
   },
   patch: function () {
     var self;
