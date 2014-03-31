@@ -909,7 +909,7 @@ set$(get$(get$(Em, 'Auth'), 'Module'), 'Rememberable', Ember.Object.extend({
         set$(this$, 'fromRecall', true);
         opts.data || (opts.data = {});
         get$(opts, 'data')[get$(get$(this$, 'config'), 'tokenKey')] = token;
-        get$(opts, 'data')[get$(get$(this$, 'config'), 'email')] = get$(this$, 'retrieveUserId');
+        set$(get$(opts, 'data'), 'email', this$.retrieveUserId());
         if (null != get$(get$(this$, 'config'), 'endPoint')) {
           return get$(this$, 'auth').signIn(get$(get$(this$, 'config'), 'endPoint'), opts).then(function () {
             return resolve();
