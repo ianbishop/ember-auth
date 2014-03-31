@@ -15,6 +15,7 @@ class Em.Auth.Module.Rememberable
         @fromRecall = true
         opts.data ||= {}
         opts.data[@config.tokenKey] = token
+        opts.data[@config.email] = @retrieveUserId
         # still resolve on failure:
         # - it means a signInError, let error handling proceed from that
         # - allows other codes to continue
